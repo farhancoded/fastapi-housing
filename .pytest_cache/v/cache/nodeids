@@ -1,0 +1,4 @@
+[
+  "test/test_user.py::test_get_my_roommate_applications",
+  "test/test_user.py::test_request_roommate_listing_success"
+]

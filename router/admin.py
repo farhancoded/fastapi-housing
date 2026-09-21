@@ -20,6 +20,7 @@ class ListingCreate(BaseModel):
     category: str  # "Apartment", "Studio", "Shared Room"
     location: str
     price: float = Field(default=0.0, ge=0)
+    image_url: Optional[str] = None 
 
 class ListingUpdate(BaseModel):
     title: Optional[str] = Field(default=None)
@@ -28,6 +29,7 @@ class ListingUpdate(BaseModel):
     location: Optional[str] = Field(default=None)
     price: Optional[float] = Field(default=None)
     status: Optional[str] = Field(default=None)  # "available" or "occupied"
+    image_url: Optional[str] = Field(default=None) 
 
 class ApplicationApproval(BaseModel):
     application_id: int
@@ -191,7 +193,8 @@ def review_roommate_request(user: user_dependency, db: db_dependency, review: Ro
             location=req.location,
             price=req.price,
             status="available",
-            owner_id=req.user_id 
+            owner_id=req.user_id,
+            image_url=req.image_url 
         )
         db.add(approved_listing)
     else:

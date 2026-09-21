@@ -23,6 +23,7 @@ class Listings(Base):
     description = Column(String, nullable=False)
     category = Column(String, nullable=False) # Apartment, Studio, Room
     location = Column(String, nullable=False)
+    image_url = Column(String, nullable=True, default="https://unsplash.com")
     price = Column(Float, default=0.0)
     status = Column(String, default="available") # "available", "occupied"
     owner_id = Column(Integer, ForeignKey("users.id"))

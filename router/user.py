@@ -34,6 +34,7 @@ class RoommateRequestCreate(BaseModel):
     description: str
     location: str
     price: float = Field(..., ge=0)
+    image_url: Optional[str] = None
 
 
 

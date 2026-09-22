@@ -162,30 +162,57 @@ def release_listing(user: user_dependency, db: db_dependency, listing_id: int):
 
 
 @router.get("/roommate_requests")
-def get_pending_roommate_requests(user: user_dependency, db: db_dependency):
-    if user is None or user.get('role') != 'admin':
-        raise HTTPException(status_code=401, detail='Failed Authentication')
-        
-    requests = db.query(RoommateRequests).filter(RoommateRequests.status == "pending_approval").all()
+def get_roommate_requests(
+    user: user_dependency,
+    db: db_dependency
+):
+    if user is None or user.get("role") != "admin":
+        raise HTTPException(
+            status_code=401,
+            detail="Failed Authentication"
+        )
+
+    requests = db.query(RoommateRequests).all()
+
     return requests
 
 
 @router.post("/review_roommate_request")
-def review_roommate_request(user: user_dependency, db: db_dependency, review: RoommateAction):
-    if user is None or user.get('role') != 'admin':
-        raise HTTPException(status_code=401, detail='Failed Authentication')
+def review_roommate_request(
+    user: user_dependency,
+    db: db_dependency,
+    review: RoommateAction
+):
+    if user is None or user.get("role") != "admin":
+        raise HTTPException(
+            status_code=401,
+            detail="Failed Authentication"
+        )
 
-    req = db.query(RoommateRequests).filter(RoommateRequests.id == review.request_id).first()
+    req = db.query(RoommateRequests).filter(
+        RoommateRequests.id == review.request_id
+    ).first()
+
     if not req:
-        raise HTTPException(status_code=404, detail="Roommate request record not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Roommate request record not found"
+        )
 
     action_lower = review.action.lower()
-    if action_lower not in ['approve', 'decline']:
-        raise HTTPException(status_code=400, detail="Action must be 'approve' or 'decline'")
+
+    if action_lower not in ["approve", "decline"]:
+        raise HTTPException(
+            status_code=400,
+            detail="Action must be 'approve' or 'decline'"
+        )
 
     if action_lower == "approve":
+
+        # Change roommate request status
         req.status = "approved"
-        
+
+        # Create a listing from the roommate request
         approved_listing = Listings(
             title=req.title,
             description=req.description,
@@ -194,11 +221,21 @@ def review_roommate_request(user: user_dependency, db: db_dependency, review: Ro
             price=req.price,
             status="available",
             owner_id=req.user_id,
-            image_url=req.image_url 
+            image_url=""
         )
+
         db.add(approved_listing)
+
     else:
+
+        # Decline roommate request
         req.status = "declined"
 
     db.commit()
-    return {"message": f"Roommate request has been successfully {action_lower}d and live listing created."}
+
+    return {
+        "message": (
+            f"Roommate request has been successfully "
+            f"{action_lower}d."
+        )
+    }

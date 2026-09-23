@@ -3,21 +3,18 @@ from sqlalchemy.orm import Session
 from typing import Annotated
 import model
 from database import engine, SessionLocal
-from router import admin, auth, user, listing 
+from router import admin, auth, user, listing
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
     title="Housing & Roommate Management Platform"
 )
 
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[
+        "https://shahriarhousing.netlify.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,6 +35,6 @@ db_dependency = Annotated[
 ]
 
 app.include_router(listing.router)
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(admin.router, prefix="/admin", tags=["Admin Operations"])
-app.include_router(user.router, prefix="/user", tags=["User Operations"])
+app.include_router(auth.router,prefix="/auth",tags=["Authentication"])
+app.include_router(admin.router,prefix="/admin",tags=["Admin Operations"])
+app.include_router(user.router,prefix="/user",tags=["User Operations"])

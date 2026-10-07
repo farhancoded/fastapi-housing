@@ -67,5 +67,3 @@ Follow the steps below to run this project on your local machine.
 
 Render Live link:https://fastapi-housing-r41g.onrender.com/docs
 
-
-git hub repository link:https://github.com/farhancoded/fastapi-housing
